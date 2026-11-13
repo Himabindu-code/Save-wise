@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SaveWise – AI Savings & Budget Planner</title>
+<style>
+:root{color-scheme:dark;--ink:#f1f2fa;--mut:#8f93ad;--acc:#2f7bff;--acc2:#5ab0ff;--nav:#060b16;--navink:#fff;--ok:#38d089;--bad:#ff6b85;--line:rgba(90,150,240,.16);--card:#050b17;--name:#a9b8e8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;padding:20px 16px 100px;
+background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(20,70,160,.26),transparent 70%),radial-gradient(ellipse 60% 35% at 50% 100%,rgba(25,90,200,.22),transparent 70%),#030509;background-attachment:fixed}
+.panel{max-width:1100px;margin:0 auto;padding:22px;border-radius:28px;border:1px solid rgba(90,150,240,.24);
+background:linear-gradient(165deg,#0c1f45 0%,#07122b 38%,#030813 100%);box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(30,100,230,.12),inset 0 1px 0 rgba(140,190,255,.22)}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-size:24px;font-weight:500;margin:0 0 4px}h1 span{color:var(--name)}
+.sub{color:var(--mut);font-size:13px;margin:0}
+.user{display:flex;align-items:center;gap:10px}
+.ib{width:38px;height:38px;border-radius:50%;background:#07090e;border:1px solid var(--line);display:grid;place-items:center}
+.ib svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));display:grid;place-items:center;font-weight:600}
+.who{font-size:13px;line-height:1.25}.who small{display:block;color:var(--mut);font-size:11px}
+.row{display:flex;align-items:center;gap:14px;margin:18px 0 14px;flex-wrap:wrap}
+.search{flex:1;min-width:220px;max-width:340px;margin-left:auto;background:#07090e;border:1px solid var(--line);border-radius:999px;padding:11px 18px;color:var(--mut);font-size:14px}
+nav{background:var(--nav);border-radius:999px;padding:6px;display:flex;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+nav button{all:unset;cursor:pointer;color:var(--navink);opacity:.75;display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;font-size:14px}
+nav button:hover{opacity:1}nav button.on{background:var(--acc);opacity:1}
+nav svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.grid{display:grid;gap:14px;grid-template-columns:1fr 1fr 1.15fr}
+.col{display:flex;flex-direction:column;gap:14px}
+.card{border:1px solid rgba(90,150,240,.24);border-radius:20px;padding:16px;background:linear-gradient(170deg,rgba(45,115,225,.26),rgba(5,14,34,.6) 55%),var(--card);box-shadow:inset 0 1px 0 rgba(140,190,255,.2),0 8px 24px rgba(0,0,0,.5);position:relative;overflow:hidden}
+.card h3{margin:0 0 8px;font-size:14px;color:#dfe2f2;font-weight:500}
+.big{font-size:30px;font-weight:700;margin-top:10px}.d{font-size:12px;margin-top:6px}.up{color:var(--ok)}.dn{color:var(--bad)}
+.glow{background:radial-gradient(ellipse 70% 50% at 50% 100%,rgba(40,100,220,.5),transparent 75%),var(--card);text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.glow p{margin:4px 0 16px;font-size:12px;color:var(--mut);line-height:1.5;max-width:230px}
+.glow button{all:unset;cursor:pointer;background:rgba(120,150,230,.45);border:1px solid rgba(255,255,255,.2);padding:9px 22px;border-radius:999px;font-size:12px;box-shadow:0 0 24px rgba(100,140,240,.5)}
+.pill{position:absolute;top:14px;right:14px;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:12px;background:#07090e}
+.cat{padding:11px 0;border-top:1px solid var(--line)}.cat:first-of-type{border-top:0}
+.cat .t{display:flex;justify-content:space-between;font-size:13px}
+.track{height:7px;background:rgba(255,255,255,.08);border-radius:9px;margin-top:8px;overflow:hidden}.track b{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{border:1px solid var(--line);border-radius:16px;padding:12px;background:#080a10}
+.tile small{color:var(--mut);font-size:11px}.tile b{display:block;font-size:18px;margin:6px 0 2px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:120px;margin-top:6px}
+.bars div{flex:1;text-align:center;font-size:11px;color:var(--mut)}
+.bars i{display:block;border-radius:8px 8px 4px 4px;background:linear-gradient(var(--acc2),var(--acc));margin-bottom:5px}
+.wide{grid-column:1/-1}
+.head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.head h3{margin:0}
+.range{display:flex;gap:6px}
+.range button{all:unset;cursor:pointer;font-size:12px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:#07090e;color:#fff}
+.range button.on{background:var(--acc);border-color:rgba(160,210,255,.4);box-shadow:0 0 14px rgba(60,140,255,.45)}
+.cw{display:flex;margin-top:12px}.ya{width:46px;position:relative;height:200px;font-size:11px;color:var(--mut)}.ya span{position:absolute;transform:translateY(-50%)}
+.plot{flex:1;position:relative;height:200px}.plot svg{width:100%;height:100%;display:block}
+.xa{display:flex;justify-content:space-between;margin:8px 0 0 46px;font-size:11px;color:var(--mut)}
+.mk{position:absolute;width:12px;height:12px;border-radius:50%;background:#bfe4ff;border:3px solid #3d8bff;box-shadow:0 0 10px #5ab0ff;transform:translate(-50%,-50%)}
+.vl{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(255,255,255,.3)}
+.tip{position:absolute;top:2px;transform:translateX(-50%);background:#10131c;border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:11px;color:var(--mut);white-space:nowrap}.tip b{display:block;color:#fff;font-size:13px}
+@media (max-width:900px){.grid{grid-template-columns:1fr 1fr}.col:last-child{grid-column:1/-1}}
+@media (max-width:760px){
+ body{padding:12px 10px 100px}.panel{padding:14px;border-radius:22px}.search{max-width:none;margin-left:0}
+ nav{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));justify-content:space-around;z-index:20;padding:6px 8px}
+ nav button{flex-direction:column;gap:3px;font-size:10px;padding:8px 10px}
+ .row .slot{display:none}.who{display:none}.grid{grid-template-columns:1fr}
+}
+.view{display:none}.view.on{display:block}
+.g2{display:grid;gap:14px;grid-template-columns:1fr 1fr}.g3{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}.mt{margin-top:14px}
+.li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px solid var(--line);font-size:13px}.li:first-of-type{border-top:0}.li small{display:block;color:var(--mut);font-size:11px;margin-top:2px}
+.sw{width:40px;height:22px;border-radius:99px;background:#2a2f40;position:relative;cursor:pointer;flex:none}.sw:after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}.sw.on{background:var(--acc)}.sw.on:after{left:21px}
+.donut{width:170px;height:170px;border-radius:50%;background:conic-gradient(#1a73ff 0 31%,#2bb8ff 31% 78%,#1f5fe0 78% 89%,#a9e0ff 89% 100%);display:grid;place-items:center;margin:8px auto 14px}.donut div{width:108px;height:108px;border-radius:50%;background:#06101f;display:grid;place-items:center;font-size:12px;text-align:center;color:var(--mut)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px}
+.tag{font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--mut)}
+.btn{all:unset;cursor:pointer;background:rgba(120,150,230,.45);border:1px solid rgba(255,255,255,.2);padding:9px 18px;border-radius:999px;font-size:12px;margin-top:12px;display:inline-block;box-shadow:0 0 20px rgba(100,140,240,.35)}
+.ins{padding:12px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.5}.ins:first-of-type{border-top:0}.ins b{display:block;margin-bottom:2px}
+@media (max-width:760px){.g2,.g3{grid-template-columns:1fr}}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;margin-bottom:12px}.logo i{font-style:normal;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:grid;place-items:center;color:#fff}.logo span{color:var(--acc2)}
+.user{position:relative}button.ib{all:unset;cursor:pointer;position:relative;width:38px;height:38px;border-radius:50%;background:#07090e;border:1px solid var(--line);display:grid;place-items:center}
+.bd{position:absolute;top:-4px;right:-4px;background:#ff4d6a;border-radius:50%;font-size:10px;width:16px;height:16px;display:grid;place-items:center;font-weight:600}
+.pop{display:none;position:absolute;right:0;top:48px;width:290px;background:#0c0f16;border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:12px 14px;z-index:30;box-shadow:0 16px 40px rgba(0,0,0,.5)}.pop.on{display:block}.pop h3{margin:0 0 4px;font-size:13px}
+button.search{cursor:pointer;font:inherit;font-size:14px;text-align:left}
+.seg{display:inline-flex;background:#07090e;border-radius:99px;padding:3px;border:1px solid var(--line)}.seg button{all:unset;cursor:pointer;font-size:12px;padding:6px 14px;border-radius:99px}.seg button.on{background:var(--acc)}
+input[type=range]{width:100%;accent-color:var(--acc2)}
+.in{background:#05070b;border:1px solid var(--line);border-radius:12px;padding:8px 12px;color:#fff;font:inherit;font-size:13px;width:150px}
+.q{font-style:italic;font-size:13px;color:#dfe2f2;padding:12px 0}
+.swt{display:flex;gap:8px;align-items:center}.swt button{all:unset;cursor:pointer;width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.3)}
+.sg{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:12px 0}.sg i{aspect-ratio:1;border-radius:10px;background:rgba(255,255,255,.06)}.sg i.b{background:linear-gradient(var(--acc2),var(--acc))}.sg i.t{outline:2px solid #fff}
+.avs{display:flex}.avs i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--acc);display:grid;place-items:center;font-size:11px;margin-left:-6px;border:2px solid var(--card)}
+.circ{padding:12px 0;border-top:1px solid var(--line)}.circ:first-of-type{border-top:0}.circ .f{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:13px}
+.chat{display:none;position:fixed;right:20px;bottom:20px;width:340px;max-width:calc(100vw - 24px);height:440px;max-height:calc(100vh - 100px);background:linear-gradient(160deg,#0e2250,#050b17);border:1px solid rgba(255,255,255,.18);border-radius:20px;z-index:40;flex-direction:column;padding:14px;box-shadow:0 20px 60px rgba(0,0,0,.6)}.chat.on{display:flex}
+.ch{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}.ch button{all:unset;cursor:pointer;padding:0 6px}
+#cm{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.m{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 12px;font-size:13px;line-height:1.45;max-width:88%}.m.u{align-self:flex-end;background:var(--acc)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.chips button{all:unset;cursor:pointer;font-size:11px;padding:6px 10px;border-radius:99px;background:rgba(255,255,255,.08)}
+.cin{display:flex;gap:8px}.cin input{flex:1;background:#05070b;border:1px solid var(--acc2);border-radius:99px;padding:9px 14px;color:#fff;font:inherit;font-size:13px;min-width:0}
+body.hide .big,body.hide .tile b,body.hide .cat .t span:last-child{filter:blur(8px)}
+@media (max-width:760px){.chat{bottom:calc(90px + env(safe-area-inset-bottom,0px));right:12px}.pop{right:-40px}}
+/* shiny black / dark-blue / light-blue glass */
+.panel{background:radial-gradient(ellipse 80% 40% at 20% 0%,rgba(40,110,230,.28),transparent 70%),linear-gradient(165deg,#07142e 0%,#040b1b 45%,#02060f 100%);border:1px solid rgba(130,190,255,.42);box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 44px rgba(40,120,255,.28),0 30px 80px rgba(0,0,0,.85),inset 0 1px 0 rgba(210,235,255,.5),inset 0 0 70px rgba(30,100,220,.1)}
+.card{border:1px solid rgba(130,190,255,.4);background:radial-gradient(ellipse 90% 70% at 15% 0%,rgba(60,140,255,.42),transparent 65%),linear-gradient(180deg,rgba(14,40,90,.55),rgba(3,9,22,.92)),#040a16;box-shadow:inset 0 1px 0 rgba(210,235,255,.55),inset 0 0 30px rgba(40,110,230,.12),0 0 18px rgba(50,130,255,.2),0 10px 28px rgba(0,0,0,.6)}
+.wide,.wide2{background:radial-gradient(ellipse 100% 85% at 30% 0%,rgba(80,160,255,.62),transparent 72%),linear-gradient(180deg,rgba(28,82,170,.62),rgba(4,12,30,.96) 88%),#040a16}
+.card.glow{background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(70,150,255,.7),transparent 75%),radial-gradient(ellipse 90% 70% at 15% 0%,rgba(60,140,255,.3),transparent 65%),linear-gradient(180deg,rgba(14,40,90,.5),rgba(3,9,22,.92)),#040a16}
+.card h3{color:#e8f1ff}
+.tile{background:linear-gradient(160deg,rgba(40,100,210,.22),rgba(3,8,20,.92));border:1px solid rgba(130,190,255,.32);box-shadow:inset 0 1px 0 rgba(210,235,255,.28)}
+nav{background:linear-gradient(180deg,rgba(18,36,72,.75),rgba(3,8,18,.92));border:1px solid rgba(130,190,255,.35);box-shadow:inset 0 1px 0 rgba(210,235,255,.3),0 0 22px rgba(40,120,255,.18)}
+nav button{border:1px solid transparent}
+nav button.on{background:linear-gradient(180deg,#46a0ff,#1569f0);border-color:rgba(220,240,255,.9);box-shadow:0 0 18px rgba(70,150,255,.8),inset 0 1px 0 rgba(255,255,255,.5)}
+.search{border:1px solid rgba(130,190,255,.38);background:linear-gradient(180deg,rgba(18,36,72,.6),rgba(3,8,18,.92));box-shadow:inset 0 1px 0 rgba(210,235,255,.28),0 0 16px rgba(40,120,255,.12)}
+button.ib{border:1px solid rgba(130,190,255,.35);background:linear-gradient(180deg,rgba(18,36,72,.6),rgba(3,8,18,.95));box-shadow:inset 0 1px 0 rgba(210,235,255,.3)}
+.av{border:1px solid rgba(220,240,255,.7);box-shadow:0 0 12px rgba(70,150,255,.6)}
+.range button{border:1px solid rgba(130,190,255,.3);background:rgba(4,10,24,.85)}
+.range button.on{background:linear-gradient(180deg,#46a0ff,#1569f0);border-color:rgba(220,240,255,.85);box-shadow:0 0 14px rgba(70,150,255,.75),inset 0 1px 0 rgba(255,255,255,.45)}
+.btn,.glow button{background:linear-gradient(180deg,#46a0ff,#1562e8);border:1px solid rgba(220,240,255,.85);box-shadow:0 0 18px rgba(70,150,255,.65),inset 0 1px 0 rgba(255,255,255,.5)}
+.pill{border:1px solid rgba(130,190,255,.4);box-shadow:inset 0 1px 0 rgba(210,235,255,.25)}
+.tag{border:1px solid rgba(130,190,255,.4)}
+.seg{border:1px solid rgba(130,190,255,.35)}.seg button.on{background:linear-gradient(180deg,#46a0ff,#1569f0);box-shadow:0 0 12px rgba(70,150,255,.7)}
+.sw{border:1px solid rgba(130,190,255,.3)}.sw.on{background:linear-gradient(180deg,#46a0ff,#1569f0);box-shadow:0 0 10px rgba(70,150,255,.75)}
+.track{background:rgba(130,190,255,.13)}.track b{background:linear-gradient(90deg,#1569f0,#6ac4ff);box-shadow:0 0 9px rgba(70,160,255,.75)}
+.cat,.li,.ins,.circ{border-top-color:rgba(130,190,255,.16)}
+.bars i{background:linear-gradient(180deg,#62b6ff,#1a6dff);border:1px solid rgba(210,235,255,.5);box-shadow:0 0 12px rgba(70,150,255,.55)}
+.sg i{border:1px solid rgba(130,190,255,.14);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:600;color:rgba(255,255,255,.38)}.sg i.b{color:#fff}.sg i.b{background:linear-gradient(180deg,#62b6ff,#1569f0);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 8px rgba(70,150,255,.45)}
+.ya,.xa{color:#a9c4e8}
+.tip{border:1px solid rgba(200,230,255,.6);background:rgba(4,12,30,.88);box-shadow:0 0 14px rgba(70,150,255,.4)}
+.vl{border-left:1px dashed rgba(230,245,255,.65)}
+.mk{background:#fff;border:3px solid #4aa3ff;box-shadow:0 0 14px #6ab8ff,0 0 4px #fff}
+.in{border:1px solid rgba(130,190,255,.35)}
+.pop,.chat{border:1px solid rgba(130,190,255,.45);box-shadow:0 0 24px rgba(50,130,255,.3),0 16px 40px rgba(0,0,0,.6)}
+.chat{background:radial-gradient(ellipse 90% 60% at 20% 0%,rgba(60,140,255,.4),transparent 70%),linear-gradient(160deg,#0b1d44,#030913)}
+.cin input{border:1px solid rgba(130,190,255,.6)}
+.plot{cursor:crosshair;touch-action:pan-y}.tip,.mk,.vl{pointer-events:none}
+.mk,.vl,.tip{transition:left .1s ease,top .1s ease}
+.mod{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;align-items:center;justify-content:center;padding:16px}.mod.on{display:flex}
+.box{width:340px;max-width:100%;background:radial-gradient(ellipse 90% 60% at 20% 0%,rgba(60,140,255,.4),transparent 70%),linear-gradient(160deg,#0b1d44,#030913);border:1px solid rgba(130,190,255,.45);border-radius:20px;padding:18px;box-shadow:0 0 24px rgba(50,130,255,.3),0 16px 40px rgba(0,0,0,.6)}
+.box h3{margin:0 0 4px;font-size:16px}.box label{display:block;font-size:12px;color:var(--mut);margin:12px 0 4px}.box .in{width:100%}.box .err{color:var(--bad);font-size:12px;min-height:16px;margin-top:8px}.box .acts{display:flex;gap:8px;justify-content:flex-end}.box .acts .btn{margin-top:4px}
+.cat .st{font-size:10px;margin-left:8px;padding:1px 7px;border-radius:99px;border:1px solid currentColor;color:var(--mut)}
+.cat .st.full{color:var(--bad)}
+.cat .eta{font-size:11px;color:var(--mut);margin-top:6px}
+.tour-hl{outline:2px solid #fff;outline-offset:4px;border-radius:20px}
+.sl{grid-column:1/-1;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:16px 2px 2px}
+.card h3 .cs{display:block;font-size:11px;font-weight:400;color:var(--mut);margin-top:2px}
+.lnk{all:unset;cursor:pointer;position:absolute;top:14px;right:14px;font-size:11px;color:#bfe4ff;padding:3px 10px;border-radius:99px;border:1px solid rgba(130,190,255,.4)}.lnk:focus-visible{outline:2px solid #fff}
+.card.clk{cursor:pointer;transition:transform .15s}.card.clk:hover{transform:translateY(-2px)}
+.hero .big{font-size:38px}
+#bcats .cat,#dcats .cat,#sgoals .cat,#txs .li{cursor:pointer}
+#bcats .cat:focus-visible,#dcats .cat:focus-visible,#sgoals .cat:focus-visible,#txs .li:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.fn{font-size:11px;color:var(--bad);margin-top:6px}
+.sw:focus-visible,.ia:focus-visible,.btn:focus-visible,nav button:focus-visible,.tag:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.ia{all:unset;cursor:pointer;display:inline-block;margin-top:6px;font-size:11px;padding:5px 12px;border-radius:99px;border:1px solid rgba(130,190,255,.5);color:#bfe4ff}
+.ia:hover,.ia:focus-visible{background:rgba(70,150,255,.25)}.ia.done{color:var(--ok);border-color:var(--ok);cursor:default}
+</style>
+</head>
+<body>
+<div class="panel">
+<header>
+ <div><div class="logo"><i>S</i><div>Save<span>Wise</span></div></div><h1 id="title">Welcome, <span>Nadia</span></h1><p class="sub">Here’s your savings and budget overview</p></div>
+ <div class="user">
+  <button class="ib" id="bell" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 6 2 7 2 7H4s2-1 2-7M10 20a2 2 0 004 0"/></svg><b class="bd">3</b></button>
+  <button class="ib" id="cog" aria-label="Quick settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></button>
+  <div class="av">N</div><div class="who">Nadia Rachel<small id="wemail">nadia@savewise.app</small></div>
+  <div class="pop" id="pn"><h3>Notifications</h3>
+   <div class="li"><span>Rent & bills is at 100%<small>Budget alert · 2h ago</small></span></div>
+   <div class="li"><span>Goa trip is 60% funded<small>₹12,000 to go · yesterday</small></span></div>
+   <div class="li"><span>AI tip: pause one streaming plan<small>Tap to see how · yesterday</small></span></div>
+  </div>
+  <div class="pop" id="pq"><h3>Quick settings</h3>
+   <div class="li"><span>Hide amounts<small>Blur balances on screen</small></span><div class="sw" data-act="hide"></div></div>
+   <div class="li"><span>Accent<small>Highlight colour</small></span><div class="swt"><button data-acc="#2f7bff,#5ab0ff" style="background:#2f7bff"></button><button data-acc="#7a6cff,#a79dff" style="background:#7a6cff"></button><button data-acc="#14b8a6,#5eead4" style="background:#14b8a6"></button></div></div>
+  </div>
+ </div>
+</header>
+<div class="row">
+ <div class="slot" id="topslot"></div>
+ <button class="search" id="askbtn">✦ Ask savewise.ai anything</button>
+ <button class="btn" id="tourbtn" style="margin:0">Take a tour</button>
+</div>
+<nav id="nav" aria-label="Main">
+ <button class="on" data-k="Dashboard"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10H3z"/></svg>Home</button>
+ <button data-k="Budget"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18"/></svg>Budget</button>
+ <button data-k="Savings"><svg viewBox="0 0 24 24"><path d="M12 3v18M7 8c0-2 2-3 5-3s5 1 5 3-2 3-5 3-5 1-5 3 2 3 5 3 5-1 5-3"/></svg>Savings</button>
+ <button data-k="Analysis"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Analysis</button>
+ <button data-k="Community"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6M17 5a3 3 0 010 6M22 19c0-3-2-5-4-5"/></svg>Community</button>
+ <button data-k="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Settings</button>
+</nav>
+
+<section class="view on" id="v-Dashboard"><div class="grid">
+ <div class="col">
+  <div class="card"><h3>Total savings</h3><span class="pill" id="tp">1M ⌄</span><div class="big">₹1,24,300</div><div class="d up" id="ts">▲ 8.2% from last month</div></div>
+  <div class="card glow"><h3>AI insight</h3><p>Cutting food delivery by ₹2,000 can reach your goal 3 weeks earlier.</p><button id="xai">Explore AI insights</button></div>
+ </div>
+ <div class="card" id="dcats"><h3>Budget by category</h3>
+  <div class="cat"><div class="t"><span>Food</span><span>₹12,000 / 15,000</span></div><div class="track"><b style="width:80%"></b></div></div>
+  <div class="cat"><div class="t"><span>Rent & bills</span><span>₹18,000 / 18,000</span></div><div class="track"><b style="width:100%"></b></div></div>
+  <div class="cat"><div class="t"><span>Travel</span><span>₹4,200 / 8,000</span></div><div class="track"><b style="width:52%"></b></div></div>
+  <div class="cat"><div class="t"><span>Fun</span><span>₹4,250 / 9,000</span></div><div class="track"><b style="width:47%"></b></div></div>
+ </div>
+ <div class="col">
+  <div class="card"><h3>My overview</h3><div class="tiles">
+   <div class="tile"><small>Spent this month</small><b id="dsp">₹38,450</b><span class="d dn">▲ 4.1% from last month</span></div>
+   <div class="tile"><small>Monthly budget left</small><b id="dlf">₹11,550</b><span class="d up" id="dlp">23% of ₹50,000</span></div></div></div>
+  <div class="card" style="flex:1"><h3>Monthly spending</h3><div class="bars" id="bars"></div></div>
+ </div>
+
+ <div class="card wide">
+  <div class="head"><h3>Portfolio performance</h3><div class="range" id="range"><button data-r="1D">1D</button><button data-r="1W">1W</button><button data-r="1M">1M</button><button data-r="6M">6M</button><button data-r="1Y" class="on">1Y</button></div></div>
+  <div style="display:flex;gap:30px;margin-top:10px"><div><small style="color:var(--mut)">Portfolio value</small><div class="big" style="margin-top:2px">₹1,86,500</div></div><div><small style="color:var(--mut)">Today</small><div class="big up" style="margin-top:2px">▲ 2.4%</div></div></div>
+  <div class="cw"><div class="ya" id="ya"></div><div class="plot" id="plot"><svg id="line" viewBox="0 0 600 200" preserveAspectRatio="none"></svg></div></div>
+  <div class="xa" id="xa"></div>
+ </div>
+</div>
+</section>
+
+<section class="view" id="v-Budget">
+ <div class="g3">
+  <div class="card"><h3>Monthly budget</h3><div class="big">₹50,000</div><div class="d" style="color:var(--mut)">Resets on the 1st</div></div>
+  <div class="card"><h3>Spent</h3><div class="big" id="bsp">₹38,450</div><div class="d dn" id="bsq">77% used</div></div>
+  <div class="card"><h3>Left</h3><div class="big" id="blf">₹11,550</div><div class="d up" id="blq">23% remaining</div></div>
+ </div>
+ <div class="g2 mt">
+  <div class="card" id="bcats"><h3>Category limits</h3>
+   <div class="cat"><div class="t"><span>Food</span><span>₹12,000 / 15,000</span></div><div class="track"><b style="width:80%"></b></div></div>
+   <div class="cat"><div class="t"><span>Rent & bills</span><span>₹18,000 / 18,000</span></div><div class="track"><b style="width:100%"></b></div></div>
+   <div class="cat"><div class="t"><span>Travel</span><span>₹4,200 / 8,000</span></div><div class="track"><b style="width:52%"></b></div></div>
+   <div class="cat"><div class="t"><span>Fun</span><span>₹4,250 / 9,000</span></div><div class="track"><b style="width:47%"></b></div></div>
+   <button class="btn" id="addcat">+ Add category</button>
+  </div>
+  <div class="card" id="txs"><h3>Recent transactions</h3>
+   <div class="li"><span>Swiggy<small>Food · Today</small></span><span class="dn">−₹850</span></div>
+   <div class="li"><span>Uber<small>Travel · Yesterday</small></span><span class="dn">−₹420</span></div>
+   <div class="li"><span>Netflix<small>Fun · 6 Nov</small></span><span class="dn">−₹649</span></div>
+   <div class="li"><span>House rent<small>Rent & bills · 1 Nov</small></span><span class="dn">−₹18,000</span></div>
+   <div class="li"><span>Salary<small>Income · 1 Nov</small></span><span class="up">+₹65,000</span></div>
+   <button class="btn" id="addexp">+ Add expense</button>
+  </div>
+ </div>
+</section>
+
+<section class="view" id="v-Savings">
+ <div class="g3">
+  <div class="card"><h3>Total saved</h3><div class="big">₹1,24,300</div><div class="d up">▲ 8.2% from last month</div></div>
+  <div class="card"><h3>PayPal balance</h3><div class="big" id="ppbal">₹21,800</div><div class="d" style="color:var(--mut)">Linked · ready to move to goals</div><button class="btn" id="ppmove">Move to goal</button></div>
+  <div class="card"><h3>Saved by auto-save</h3><div class="big">₹6,420</div><div class="d up">this month</div></div>
+ </div>
+ <div class="card mt wide2"><div class="head"><h3>Savings growth</h3><div class="range" id="range2"><button data-r="3">3M</button><button data-r="6" class="on">6M</button><button data-r="12">1Y</button></div></div>
+  <div class="cw"><div class="ya" id="ya2"></div><div class="plot" id="plot2"><svg id="line2" viewBox="0 0 600 200" preserveAspectRatio="none"></svg></div></div><div class="xa" id="xa2"></div></div>
+ <div class="g2 mt">
+  <div class="card" id="sgoals"><h3>My goals</h3>
+   <div class="cat"><div class="t"><span>Emergency fund</span><span>₹60,000 / 1,00,000</span></div><div class="track"><b style="width:60%"></b></div></div>
+   <div class="cat"><div class="t"><span>Goa trip</span><span>₹18,000 / 30,000</span></div><div class="track"><b style="width:60%"></b></div></div>
+   <div class="cat"><div class="t"><span>New laptop</span><span>₹46,300 / 80,000</span></div><div class="track"><b style="width:58%"></b></div></div>
+   <button class="btn" id="addgoal">+ New goal</button>
+  </div>
+  <div class="card"><h3>Auto-save rules</h3>
+   <div class="li"><span>Round up every payment<small>Spare change goes to savings</small></span><div class="sw on"></div></div>
+   <div class="li"><span>Save 20% of salary<small>On the day it arrives</small></span><div class="sw on"></div></div>
+   <div class="li"><span>Weekly ₹1,000 transfer<small>Every Monday from PayPal</small></span><div class="sw"></div></div>
+   <div class="li"><span>AI suggested saving<small>Moves leftover budget at month end</small></span><div class="sw on"></div></div>
+  </div>
+ </div>
+</section>
+
+<section class="view" id="v-Analysis">
+ <div class="g2">
+  <div class="card"><h3>Where your money went</h3><div class="donut"><div>₹38,450<br>spent</div></div>
+   <div class="li"><span><i class="dot" style="background:#1a73ff"></i>Food</span><span>31%</span></div>
+   <div class="li"><span><i class="dot" style="background:#2bb8ff"></i>Rent & bills</span><span>47%</span></div>
+   <div class="li"><span><i class="dot" style="background:#1f5fe0"></i>Travel</span><span>11%</span></div>
+   <div class="li"><span><i class="dot" style="background:#a9e0ff"></i>Fun</span><span>11%</span></div>
+  </div>
+  <div class="card"><h3>AI insights</h3>
+   <div class="ins"><b>Cut food delivery</b>Reducing it by ₹2,000 reaches your Goa trip goal 3 weeks earlier.<button class="ia" data-ia="cap">Set ₹13,000 Food cap</button></div>
+   <div class="ins"><b>Subscriptions</b>You pay for 3 streaming services. Pausing one saves about ₹650 a month.<button class="ia" data-ia="pause">Remind me to pause one</button></div>
+   <div class="ins"><b>Budget alert</b>Rent & bills has used 100% of its limit. Review it before next month.<button class="ia" data-ia="rev">Review Rent &amp; bills</button></div>
+   <div class="ins"><b>Good progress</b>Your savings grew for 6 months in a row.</div>
+   <button class="btn" id="ask2">Ask savewise.ai</button>
+  </div>
+ </div>
+</section>
+
+<section class="view" id="v-Community">
+ <div class="g2">
+  <div class="card" id="circs"><h3>Saving circles</h3>
+   <div class="circ" data-cur="18000" data-tar="30000"><div class="li" style="border:0;padding:0"><span><b>Goa trip gang</b><small>4 friends · target 12 Dec</small></span><div class="avs"><i>N</i><i>A</i><i>M</i><i>R</i></div></div><div class="track" style="margin-top:12px"><b style="width:60%"></b></div><div class="f"><span class="cv">₹18,000 of ₹30,000</span><button class="btn addc" style="margin:0">+ ₹500</button></div></div>
+   <div class="circ" data-cur="41000" data-tar="60000"><div class="li" style="border:0;padding:0"><span><b>Flat emergency pot</b><small>2 flatmates · no deadline</small></span><div class="avs"><i>N</i><i>S</i></div></div><div class="track" style="margin-top:12px"><b style="width:68%"></b></div><div class="f"><span class="cv">₹41,000 of ₹60,000</span><button class="btn addc" style="margin:0">+ ₹500</button></div></div>
+   <button class="btn" id="addcirc">+ Start a circle</button>
+  </div>
+  <div class="card"><h3>Your 28-day no-spend streak</h3><div class="big">14 days</div><div class="sg" id="sg"></div><div class="d" style="color:var(--mut)">Bright days stayed under your daily limit. Keep the chain going.</div></div>
+ </div>
+ <div class="g2 mt">
+  <div class="card"><h3>Challenges</h3>
+   <div class="li"><span>No-spend weekend<small>1,240 joined · this Sat–Sun</small></span><span class="tag join" style="cursor:pointer">Join</span></div>
+   <div class="li"><span>₹500 a day for 30 days<small>860 joined · you are on day 9</small></span><span class="tag join" style="cursor:pointer">Joined</span></div>
+   <div class="li"><span>Cook-at-home week<small>2,015 joined · ends Sunday</small></span><span class="tag join" style="cursor:pointer">Join</span></div>
+  </div>
+  <div class="card"><h3>Top savers this week</h3>
+   <div class="li"><span>Aarav K.<small>21-day streak</small></span><span class="up">₹4,200</span></div>
+   <div class="li"><span>Nadia R. (you)<small>14-day streak</small></span><span class="up">₹3,600 <span class="tag">You</span></span></div>
+   <div class="li"><span>Meera S.<small>9-day streak</small></span><span class="up">₹2,900</span></div>
+  </div>
+ </div>
+</section>
+
+<section class="view" id="v-Settings">
+ <div class="g2">
+  <div class="card"><h3>AI coach</h3>
+   <div class="seg" id="tone"><button data-q="“Nice work — you are ₹11,550 under budget. Let’s keep it going.”">Friendly</button><button class="on" data-q="“₹11,550 left for 21 days. Rent is maxed, so hold Food under ₹550 a day.”">Direct</button><button data-q="“Rent is at 100%. No new Fun spending until 1 Dec.”">Strict</button></div>
+   <div class="q" id="tq">“₹11,550 left for 21 days. Rent is maxed, so hold Food under ₹550 a day.”</div>
+   <div class="li"><span>Warn me when a category passes<small>Used by alerts and the AI</small></span><b id="wv">80%</b></div>
+   <input type="range" id="wr" min="50" max="100" step="5" value="80">
+   <div class="li"><span>Weekly AI report<small>Every Sunday morning</small></span><div class="sw on"></div></div>
+  </div>
+  <div class="card"><h3>Money rules</h3>
+   <div class="li"><span>Roll over unspent budget<small>Leftover moves to next month’s Fun</small></span><div class="sw"></div></div>
+   <div class="li"><span>Freeze a category at 100%<small>Ask me before I overspend</small></span><div class="sw on"></div></div>
+   <div class="li"><span>Round up to nearest<small>Spare change goes to savings</small></span><div class="seg"><button class="on">₹10</button><button>₹50</button></div></div>
+   <div class="li"><span>Salary day<small>Auto-save runs on this day</small></span><span style="color:var(--mut)">1st of month</span></div>
+  </div>
+ </div>
+ <div class="g2 mt">
+  <div class="card"><h3>Profile</h3>
+   <div class="li"><span>Display name</span><input class="in" id="pname" value="Nadia" maxlength="30" autocomplete="name" aria-label="Display name"></div>
+   <div class="li" style="flex-wrap:wrap"><span>Email<small id="pemail">Verified</small></span><input class="in" id="pemailin" type="email" value="nadia@savewise.app" aria-label="Email" autocomplete="email" style="width:210px;max-width:100%"><button class="btn" id="vsend" style="margin:0;display:none">Send verification</button></div>
+  </div>
+  <div class="card"><h3>Linked accounts</h3>
+   <div class="li"><span>PayPal<small>Balance ₹21,800</small></span><span class="tag">Connected</span></div>
+   <div class="li"><span>HDFC Bank ••4821<small>Salary account</small></span><span class="tag">Connected</span></div>
+   <div class="li"><span>UPI<small>nadia@okbank</small></span><span class="tag">Link</span></div>
+  </div>
+ </div>
+ <div class="card mt"><h3>Privacy & your data</h3>
+  <div class="li"><span>Hide amounts on screen<small>Blur balances when others can see</small></span><div class="sw" data-act="hide"></div></div>
+  <div class="li"><span>App lock<small>Ask for a PIN when SaveWise opens</small></span><div class="sw"></div></div>
+  <div class="li"><span>Export my transactions<small>Download a CSV file</small></span><span class="tag">Export</span></div>
+ </div>
+</section>
+</div>
+<div class="mod" id="mod"><div class="box"><h3 id="mt"></h3><div id="mf"></div><div class="err" id="me"></div><div class="acts"><button class="btn" id="mc" style="background:rgba(255,255,255,.1);box-shadow:none">Cancel</button><button class="btn" id="ms">Save</button></div></div></div>
+<div class="chat" id="chat"><div class="ch"><span>✦ SaveWise AI</span><button id="cx">✕</button></div><div id="cm"><div class="m">Hi Nadia! Ask me about your budget, goals or spending.</div></div>
+ <div class="chips"><button data-p="Review my spending">Review my spending</button><button data-p="Can I afford a ₹15,000 phone?">Can I afford a ₹15,000 phone?</button><button data-p="Reach Goa trip sooner">Reach Goa trip sooner</button><button data-p="Plan the rest of November">Plan the rest of November</button></div>
+ <div class="cin"><input id="ci" placeholder="Ask about your budget, goals..."><button class="btn" id="cs" style="margin:0">Send</button></div></div>
+<script>
+(function(){
+var nav=document.getElementById('nav'),slot=document.getElementById('topslot'),mq=window.matchMedia('(max-width:760px)');
+function place(){ if(mq.matches){document.body.appendChild(nav)}else{slot.appendChild(nav)} }
+place(); mq.addEventListener('change',place);
+nav.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+ nav.querySelectorAll('button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+ document.getElementById('title').innerHTML=b.dataset.k==='Dashboard'?'Welcome, <span>'+(window.SW_NAME||'Nadia')+'</span>':({Budget:'Your budget',Savings:'Your savings',Analysis:'Your spending analysis',Community:'Your community',Settings:'Your settings'})[b.dataset.k];
+ var subs={Dashboard:(window.SW_HOME_SUB?window.SW_HOME_SUB():'Here’s your savings and budget overview'),Budget:'Set limits and track every rupee',Savings:'Goals, growth, auto-save rules and your PayPal balance',Analysis:'AI-powered insights on your spending',Community:'Challenges and tips from other savers',Settings:'Profile, preferences and support'};
+ document.querySelector('.sub').textContent=subs[b.dataset.k];
+ document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('on',v.id==='v-'+b.dataset.k)})});
+document.addEventListener('click',function(e){var w=e.target.closest('.sw');if(!w)return;w.classList.toggle('on');
+ if(w.dataset.act==='hide'){var on=w.classList.contains('on');document.body.classList.toggle('hide',on);document.querySelectorAll('.sw[data-act=hide]').forEach(function(x){x.classList.toggle('on',on)})}});
+var $=function(i){return document.getElementById(i)};
+var $=function(i){return document.getElementById(i)};
+var SV=[50,54,58,63,68,73,78,86,95,104,114,124],SM=['Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov'];
+var PF={'1Y':{d:[120,127,124,136,134,151,146,158,154,171,179,186.5],l:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],st:25},
+ '6M':{d:[146,158,154,171,179,186.5],l:['Jul','Aug','Sep','Oct','Nov','Dec'],st:25},
+ '1M':{d:[172,176,181,184,186.5],l:['W1','W2','W3','W4','Now'],st:5},
+ '1W':{d:[183,184,183.5,185,185.5,186,186.5],l:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],st:2},
+ '1D':{d:[182.1,182.8,182.4,184,185.2,186.5],l:['9am','11am','1pm','3pm','5pm','Now'],st:2}};
+var ST={};
+function mark(s,i){var c=ST[s],pl=$('plot'+s),px=i/(c.d.length-1)*100,py=c.p[i][1]/c.h*100,pc=((c.d[i]-c.d[0])/c.d[0]*100).toFixed(1);
+ var vl=pl.querySelector('.vl'),mk=pl.querySelector('.mk'),tp=pl.querySelector('.tip');
+ vl.style.left=px+'%';mk.style.left=px+'%';mk.style.top=py+'%';tp.style.left=Math.min(Math.max(px,10),90)+'%';
+ tp.innerHTML=c.l[i]+'<b>₹'+Math.round(c.d[i]*1000).toLocaleString('en-IN')+' <span class="up">'+(+pc>=0?'+':'')+pc+'%</span></b>'}
+function draw(s,d,l,st){var lo=Math.floor(Math.min.apply(null,d)/st)*st,hi=Math.ceil(Math.max.apply(null,d)/st)*st;if(hi===lo)hi+=st;
+ var w=600,h=200,Y=function(v){return h-(v-lo)/(hi-lo)*(h-20)-10};
+ var p=d.map(function(v,i){return [i*(w/(d.length-1)),Y(v)]});
+ var path=p.map(function(q,i){return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join(' ');
+ var grid='',ya='';
+ for(var v=lo;v<=hi+.001;v+=st){var y=Y(v);
+  grid+='<line x1="0" x2="'+w+'" y1="'+y+'" y2="'+y+'" stroke="rgba(170,210,255,.12)" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"/>';
+  ya+='<span style="top:'+(y/h*100)+'%">'+Math.round(v)+'k</span>'}
+ $('ya'+s).innerHTML=ya;
+ $('line'+s).innerHTML='<defs><linearGradient id="g'+s+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aaaff" stop-opacity=".72"/><stop offset="1" stop-color="#3d8bff" stop-opacity="0"/></linearGradient></defs>'+grid+'<path d="'+path+' L'+w+' '+h+' L0 '+h+'Z" fill="url(#g'+s+')"/><path d="'+path+'" fill="none" stroke="#a8e0ff" stroke-width="2.4" vector-effect="non-scaling-stroke" style="filter:drop-shadow(0 0 6px #6ab8ff) drop-shadow(0 0 14px rgba(70,150,255,.7))"/>';
+ document.querySelectorAll('#plot'+s+' .mk,#plot'+s+' .vl,#plot'+s+' .tip').forEach(function(o){o.remove()});
+ $('plot'+s).insertAdjacentHTML('beforeend','<div class="vl"></div><div class="mk"></div><div class="tip"></div>');
+ ST[s]={d:d,l:l,p:p,h:h};mark(s,Math.floor(d.length/2));
+ $('xa'+s).innerHTML=l.map(function(x){return '<span>'+x+'</span>'}).join('')}
+function homeDraw(k){var c=PF[k];draw('',c.d,c.l,c.st)}
+function savDraw(n){draw('2',SV.slice(-n),SM.slice(-n),20)}
+homeDraw('1Y');savDraw(6);
+['','2'].forEach(function(s){var pl=$('plot'+s);function mv(e){var r=pl.getBoundingClientRect(),c=ST[s],x=(e.clientX-r.left)/r.width;mark(s,Math.round(Math.max(0,Math.min(1,x))*(c.d.length-1)))}pl.addEventListener('pointermove',mv);pl.addEventListener('pointerdown',mv)});
+$('range').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;this.querySelectorAll('button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');homeDraw(b.dataset.r)});
+$('range2').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;this.querySelectorAll('button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');savDraw(+b.dataset.r)});
+var m=[['Jun',30],['Jul',34],['Aug',29],['Sep',41],['Oct',36],['Nov',38]];
+document.getElementById('bars').innerHTML=m.map(function(x){return '<div><i style="height:'+(x[1]*2.4)+'px"></i>'+x[0]+'</div>'}).join('');
+function pop(b,p){$(b).addEventListener('click',function(e){e.stopPropagation();var o=$(p).classList.contains('on');document.querySelectorAll('.pop').forEach(function(x){x.classList.remove('on')});if(!o)$(p).classList.add('on')})}
+pop('bell','pn');pop('cog','pq');
+document.addEventListener('click',function(e){if(!e.target.closest('.pop'))document.querySelectorAll('.pop').forEach(function(x){x.classList.remove('on')})});
+document.querySelectorAll('[data-acc]').forEach(function(b){b.addEventListener('click',function(){var c=b.dataset.acc.split(',');document.documentElement.style.setProperty('--acc',c[0]);document.documentElement.style.setProperty('--acc2',c[1])})});
+document.querySelectorAll('.seg').forEach(function(g){g.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');if(b.dataset.q)$('tq').textContent=b.dataset.q})});
+$('wr').addEventListener('input',function(){$('wv').textContent=this.value+'%'});
+document.querySelectorAll('.addc').forEach(function(b){b.addEventListener('click',function(){var c=b.closest('.circ'),t=+c.dataset.tar,cur=Math.min(t,+c.dataset.cur+500);c.dataset.cur=cur;c.querySelector('.cv').textContent='₹'+cur.toLocaleString('en-IN')+' of ₹'+t.toLocaleString('en-IN');c.querySelector('.track b').style.width=(cur/t*100)+'%'})});
+document.querySelectorAll('.join').forEach(function(j){j.addEventListener('click',function(){j.textContent=j.textContent==='Join'?'Joined':'Join'})});
+var pat=[1,0,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+$('sg').innerHTML=pat.map(function(v,i){return '<i class="'+(v?'b':'')+(i===27?' t':'')+'">'+(i+1)+'</i>'}).join('');
+function say(t,u){var d=document.createElement('div');d.className='m'+(u?' u':'');d.textContent=t;$('cm').appendChild(d);$('cm').scrollTop=$('cm').scrollHeight}
+function quick(q){var l=q.toLowerCase(),m=l.match(/(\d[\d,]*)/),r;
+ if(/insight|top 3/.test(l))r='1) Rent & bills is at 100% of its limit. 2) Pausing one streaming plan saves about ₹650 a month. 3) Cutting food delivery by ₹2,000 brings the Goa trip about 3 weeks closer.';
+ else if(/afford|buy|phone/.test(l)&&m){var a=+m[1].replace(/,/g,'');r='₹'+a.toLocaleString('en-IN')+' is about '+Math.round(a/11550*100)+'% of your remaining ₹11,550 budget. '+(a>11550?'That is more than you have left this month, so wait until 1 Dec or fund it from savings goals.':'You can afford it, but it would leave only ₹'+(11550-a).toLocaleString('en-IN')+' for the rest of the month.')}
+ else if(/goa/.test(l))r='Cut food delivery by ₹2,000 a month and the Goa trip goal is reached about 3 weeks earlier. ₹12,000 is still to go.';
+ else if(/plan|november/.test(l))r='You have ₹11,550 for 21 days, about ₹550 a day. Rent is maxed, so keep Food under ₹550 a day and pause one streaming plan to save ₹650.';
+ else r='Quick view: you have ₹11,550 left for 21 days, about ₹550 a day. Rent & bills is at 100%, and pausing one streaming plan saves about ₹650 a month.';
+ return r}
+var hist=[],busy=false,sampleP=null;
+function ctx(){
+ function rows(sel){return Array.prototype.map.call(document.querySelectorAll(sel),function(e){return e.textContent.replace(/\s+/g,' ').trim()}).join('; ')}
+ return 'App data for the user ('+(window.SW_RAW||'Nadia')+'), a SaveWise budgeting app. Currency is Indian rupees. '+
+ 'This month: monthly budget ₹50,000, spent ₹38,450, ₹11,550 left for the last 21 days (about ₹550 a day). '+
+ 'Spending split: Rent & bills 47%, Food 31%, Travel 11%, Fun 11%. Rent & bills has used 100% of its limit. '+
+ 'Goals: '+rows('#sgoals .cat .t')+'. Savings circles: '+rows('.circ .li span:first-child')+'. '+
+ 'No-spend streak: 14 days (leaderboard: Aarav 21 days, '+(window.SW_RAW||'Nadia')+' 14, Meera 9). '+
+ 'Insights: cutting food delivery by ₹2,000 reaches the Goa trip about 3 weeks sooner; pausing one of 3 streaming plans saves about ₹650 a month; savings grew 6 months in a row. '+
+ 'Auto-save rules on: round-up payments, save 20% of salary, AI suggested saving.'}
+function type(d,t,cb){var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;if(rm){d.textContent=t;if(cb)cb();return}var w=t.split(' '),i=0;d.textContent='';(function n(){d.textContent+=(i?' ':'')+w[i++];$('cm').scrollTop=$('cm').scrollHeight;if(i<w.length)setTimeout(n,35);else if(cb)cb()})()}
+function late(d,q){setTimeout(function(){type(d,quick(q))},600)}
+function reply(q){
+ var d=document.createElement('div');d.className='m';d.textContent='Thinking…';$('cm').appendChild(d);$('cm').scrollTop=$('cm').scrollHeight;
+ if(busy){d.textContent='One moment, I am still answering your last question.';return}
+ busy=true;
+ function fallback(){late(d,q)}
+ function done(){busy=false}
+ if(!sampleP)sampleP=(window.claude&&window.claude.use?window.claude.use('sample'):Promise.resolve(null)).catch(function(){return null});
+ sampleP.then(function(sample){
+  if(!sample){fallback();done();return}
+  var system='You are SaveWise AI, a friendly, practical personal-finance assistant inside a budgeting app for an Indian user. Answer any question the user asks, finance-related or not. For money questions, use the app data below when it is relevant, and use rupees (₹) with Indian number formatting. Keep replies short (under about 120 words), plain text only, no markdown symbols. You are not a licensed financial advisor; for big or risky decisions, say so briefly.\n\n'+ctx();
+  var msgs=hist.concat([{role:'user',content:q}]);
+  var input=[{role:'user',content:system+'\n\nConversation so far, then the latest user message. Reply to the latest message only.\n\n'+msgs.map(function(m){return (m.role==='user'?'User: ':'SaveWise AI: ')+m.content}).join('\n')}];
+  return sample(input,{cache:false,modelTier:'quick',onText:function(o){d.textContent=o.text;$('cm').scrollTop=$('cm').scrollHeight}}).then(function(res){
+   var t=(res&&res.text||'').trim();if(!t)throw new Error('empty');
+   d.textContent=t;hist.push({role:'user',content:q},{role:'assistant',content:t});hist=hist.slice(-8);$('cm').scrollTop=$('cm').scrollHeight;done()
+  })
+ }).catch(function(e){
+  if(e&&e.code==='rate_limited'){d.textContent='Too many questions in a row. Please try again in a moment.'}
+  else if(e&&e.code==='not_granted'){late(d,q)}
+  else{late(d,q)}
+  done()
+ })
+}
+function send(t){t=(t||'').trim();if(!t)return;say(t,1);$('ci').value='';reply(t)}
+$('askbtn').addEventListener('click',function(){$('chat').classList.add('on')});
+$('cx').addEventListener('click',function(){$('chat').classList.remove('on')});
+$('cs').addEventListener('click',function(){send($('ci').value)});
+$('ci').addEventListener('keydown',function(e){if(e.key==='Enter')send(this.value)});
+document.querySelectorAll('.chips button').forEach(function(b){b.addEventListener('click',function(){send(b.dataset.p)})});
+})();
+</script>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var money=function(n){return '₹'+n.toLocaleString('en-IN')};
+var num=function(s){return +String(s).replace(/[^\d]/g,'')};
+/* TEAMMATE: backend should return this shape (e.g. GET /dashboard). The UI uses these values as defaults. */
+var DATA={user:{name:'Nadia'},budget:50000,spent:38450,paypalBalance:21800,goalRate:{'Emergency fund':5000,'Goa trip':6000,'New laptop':4000,'default':3000}};
+var BUDGET=DATA.budget,spent=DATA.spent,saveFn=null,lastFocus=null;
+$('xai').addEventListener('click',function(){$('nav').querySelector('[data-k=Analysis]').click();window.scrollTo({top:0,behavior:'smooth'})});
+$('ask2').addEventListener('click',function(){$('askbtn').click()});
+function openMod(title,fields,fn){
+ $('mt').textContent=title;$('me').textContent='';
+ $('mf').innerHTML=fields.map(function(f){var inp=f.opts?'<select class="in" id="f_'+f.k+'">'+f.opts.map(function(o){return '<option>'+o+'</option>'}).join('')+'</select>':'<input class="in" id="f_'+f.k+'" type="'+(f.t||'text')+'" placeholder="'+(f.ph||'')+'" autocomplete="off">';return '<label for="f_'+f.k+'">'+f.l+'</label>'+inp}).join('');
+ saveFn=function(){var v={};fields.forEach(function(f){v[f.k]=$('f_'+f.k).value.trim()});var e=fn(v);if(e){$('me').textContent=e}else closeMod()};
+ lastFocus=document.activeElement;$('mod').classList.add('on');var first=$('mf').querySelector('input,select');if(first)first.focus()}
+function closeMod(){$('mod').classList.remove('on');saveFn=null;if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+$('ms').addEventListener('click',function(){if(saveFn)saveFn()});
+$('mc').addEventListener('click',closeMod);
+$('mod').addEventListener('click',function(e){if(e.target===$('mod'))closeMod()});
+document.addEventListener('keydown',function(e){if(!$('mod').classList.contains('on'))return;if(e.key==='Escape')closeMod();if(e.key==='Enter'&&saveFn)saveFn()});
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function rowHTML(name,txt,pct){return '<div class="cat"><div class="t"><span>'+esc(name)+'</span><span>'+txt+'</span></div><div class="track"><b style="width:'+pct+'%"></b></div></div>'}
+function catNames(){return Array.prototype.map.call($('bcats').querySelectorAll('.cat .t span:first-child'),function(s){return s.textContent})}
+/* add category */
+$('addcat').addEventListener('click',function(){openMod('Add category',[{k:'n',l:'Category name',ph:'e.g. Groceries'},{k:'a',l:'Monthly limit (₹)',t:'number',ph:'5000'}],function(v){
+ var lim=+v.a;if(!v.n)return 'Please enter a category name.';if(!(lim>0))return 'Please enter a limit above 0.';
+ if(catNames().some(function(c){return c.toLowerCase()===v.n.toLowerCase()}))return 'That category already exists.';
+ var h=rowHTML(v.n,'₹0 / '+lim.toLocaleString('en-IN'),0);
+ $('addcat').insertAdjacentHTML('beforebegin',h);$('dcats').insertAdjacentHTML('beforeend',h);paint()})});
+/* add expense */
+function applyExpense(cat,amt){
+ [$('bcats'),$('dcats')].forEach(function(box){Array.prototype.forEach.call(box.querySelectorAll('.cat'),function(r){
+  var sp=r.querySelectorAll('.t span');if(sp[0].textContent!==cat)return;
+  var p=sp[1].textContent.split('/'),used=num(p[0])+amt,lim=num(p[1]);
+  sp[1].textContent=money(used)+' / '+lim.toLocaleString('en-IN');r.querySelector('.track b').style.width=Math.min(100,used/lim*100)+'%'})});
+ spent+=amt;var left=BUDGET-spent,pu=Math.round(spent/BUDGET*100);
+ $('bsp').textContent=money(spent);$('dsp').textContent=money(spent);$('bsq').textContent=pu+'% used';
+ $('blf').textContent=money(left);$('dlf').textContent=money(left);$('blq').textContent=(100-pu)+'% remaining';$('dlp').textContent=(100-pu)+'% of ₹50,000';paint()}
+$('addexp').addEventListener('click',function(){openMod('Add expense',[{k:'n',l:'What was it for?',ph:'e.g. Zomato'},{k:'c',l:'Category',opts:catNames()},{k:'a',l:'Amount (₹)',t:'number',ph:'500'}],function(v){
+ var amt=+v.a;if(!v.n)return 'Please enter a name.';if(!(amt>0))return 'Please enter an amount above 0.';
+ $('txs').querySelector('h3').insertAdjacentHTML('afterend','<div class="li"><span>'+esc(v.n)+'<small>'+esc(v.c)+' · Today</small></span><span class="dn">−'+money(amt)+'</span></div>');
+ applyExpense(v.c,amt)})});
+/* paint budget bars by state */
+function paint(){var w=+($('wr')&&$('wr').value)||80;[$('bcats'),$('dcats')].forEach(function(box){Array.prototype.forEach.call(box.querySelectorAll('.cat'),function(r){
+ var b=r.querySelector('.track b'),p=parseFloat(b.style.width)||0,t=r.querySelector('.t span:first-child'),o=t.querySelector('.st');if(o)o.remove();var fo=r.querySelector('.fn');if(fo)fo.remove();
+ b.classList.remove('warn','full');
+ if(p>=100){b.classList.add('full');t.insertAdjacentHTML('beforeend','<em class="st full" style="font-style:normal">Limit reached</em>');if(box.id==='bcats')r.insertAdjacentHTML('beforeend','<div class="fn">Review this before 1 Dec to avoid overspending.</div>')}
+ else if(p>=w){b.classList.add('warn');t.insertAdjacentHTML('beforeend','<em class="st warn" style="font-style:normal">Near limit</em>')}})})}
+paint();var wr=$('wr');if(wr)wr.addEventListener('input',paint);
+/* PayPal -> goal */
+var ppBal=DATA.paypalBalance;
+$('ppmove').addEventListener('click',function(){var goals=Array.prototype.map.call($('sgoals').querySelectorAll('.cat .t span:first-child'),function(x){return x.textContent});
+ openMod('Move from PayPal',[{k:'g',l:'Goal',opts:goals},{k:'a',l:'Amount (₹, up to '+ppBal.toLocaleString('en-IN')+')',t:'number',ph:'1000'}],function(v){
+  var amt=+v.a;if(!(amt>0))return 'Please enter an amount above 0.';if(amt>ppBal)return 'That is more than your PayPal balance.';
+  var row=Array.prototype.filter.call($('sgoals').querySelectorAll('.cat'),function(r){return r.querySelector('.t span').textContent===v.g})[0];if(!row)return 'Goal not found.';
+  var sp=row.querySelectorAll('.t span'),pr=sp[1].textContent.split('/'),tar=num(pr[1]),cur=Math.min(tar,num(pr[0])+amt);
+  sp[1].textContent=money(cur)+' / '+tar.toLocaleString('en-IN');row.querySelector('.track b').style.width=Math.round(cur/tar*100)+'%';
+  ppBal-=amt;$('ppbal').textContent=money(ppBal);toast('Moved '+money(amt)+' to '+v.g);
+  /* TEAMMATE: connect to backend */ api('/goals/transfer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({goal:v.g,amount:amt})}).catch(function(){})})});
+/* AI insight actions */
+document.querySelectorAll('.ia').forEach(function(b){b.addEventListener('click',function(){
+ if(b.dataset.ia==='rev'){$('nav').querySelector('[data-k=Budget]').click();window.scrollTo({top:0,behavior:'smooth'});return}
+ b.textContent=b.dataset.ia==='cap'?'Cap set ✓':'Reminder set ✓';b.classList.add('done')})});
+/* ---- API wrapper + toast (loading and error states) ---- */
+var API_BASE='http://localhost:5000';/* TEAMMATE: set backend URL here */
+function toast(m,bad){var t=$('toast');if(!t){t=document.createElement('div');t.id='toast';t.setAttribute('role','status');t.setAttribute('aria-live','polite');t.className='card';t.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:70;padding:10px 18px;border-radius:99px;font-size:13px;display:none';document.body.appendChild(t)}t.textContent=m;t.style.color=bad?'var(--bad)':'var(--ink)';t.style.display='block';clearTimeout(t._h);t._h=setTimeout(function(){t.style.display='none'},2600)}
+function api(path,opt){if(!API_BASE)return Promise.resolve(null);document.body.setAttribute('aria-busy','true');return fetch(API_BASE+path,opt).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).catch(function(e){toast('Something went wrong. Please try again.',1);throw e}).finally(function(){document.body.removeAttribute('aria-busy')})}
+/* ---- accessibility ---- */
+function sw(){document.querySelectorAll('.sw').forEach(function(e){if(!e.hasAttribute('role')){e.setAttribute('role','switch');e.setAttribute('tabindex','0');var l=e.parentNode.querySelector('span');if(l&&l.firstChild)e.setAttribute('aria-label',l.firstChild.textContent)}e.setAttribute('aria-checked',e.classList.contains('on'))})}
+document.addEventListener('keydown',function(e){if(e.target.classList&&e.target.classList.contains('sw')&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.target.click()}});
+function pb(){document.querySelectorAll('.track').forEach(function(t){var b=t.firstElementChild;if(!b)return;var row=t.closest('.cat,.circ'),n=row&&row.querySelector('.t span, b');t.setAttribute('role','progressbar');t.setAttribute('aria-valuemin','0');t.setAttribute('aria-valuemax','100');t.setAttribute('aria-valuenow',Math.round(parseFloat(b.style.width)||0));if(n)t.setAttribute('aria-label',n.textContent.replace(/(Near limit|Limit reached)$/,''))})}
+function lab(){[['line','Portfolio value over the selected period'],['line2','Total savings growth over the selected period'],['bars','Monthly spending bar chart']].forEach(function(x){var e=$(x[0]);if(e){e.setAttribute('role','img');e.setAttribute('aria-label',x[1])}});var dn=document.querySelector('.donut');if(dn){dn.setAttribute('role','img');dn.setAttribute('aria-label','Spending split: Food 31%, Rent and bills 47%, Travel 11%, Fun 11%')}var bx=$('mod').querySelector('.box');bx.setAttribute('role','dialog');bx.setAttribute('aria-modal','true');bx.setAttribute('aria-labelledby','mt')}
+$('mod').addEventListener('keydown',function(e){if(e.key!=='Tab')return;var f=$('mod').querySelectorAll('input,select,button');if(!f.length)return;var a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}});
+/* ---- goal progress + estimated finish date ---- */
+function eta(){document.querySelectorAll('#sgoals .cat').forEach(function(r){var sp=r.querySelectorAll('.t span'),p=sp[1].textContent.split('/'),cur=num(p[0]),tar=num(p[1]),rate=DATA.goalRate[sp[0].textContent]||DATA.goalRate['default'],pc=Math.round(cur/tar*100),txt;
+ if(cur>=tar)txt=pc+'% funded · goal reached';else{var d=new Date();d.setMonth(d.getMonth()+Math.ceil((tar-cur)/rate));txt=pc+'% funded · est. '+d.toLocaleDateString('en-IN',{month:'short',year:'numeric'})+' at '+money(rate)+'/mo'}
+ var e=r.querySelector('.eta');if(!e){e=document.createElement('div');e.className='eta';r.appendChild(e)}if(e.textContent!==txt)e.textContent=txt})}
+var raf=0;function sync(){raf=0;sw();pb();eta();rows()}
+function rows(){document.querySelectorAll('#bcats .cat,#dcats .cat,#sgoals .cat,#txs .li').forEach(function(r){if(!r.hasAttribute('tabindex')){r.setAttribute('tabindex','0');r.setAttribute('role','button')}})}
+new MutationObserver(function(){if(!raf)raf=requestAnimationFrame(sync)}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['style','class']});
+lab();sync();
+/* ---- editable display name (Settings > Profile) ---- */
+var pn=$('pname'),curName=DATA.user.name;
+function mail(n){var l=n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'.').replace(/^\.+|\.+$/g,'');return (l||'user')+'@savewise.app'}
+function syncName(n){var p=n.split(/\s+/).filter(Boolean),lb=p[0]+(p[1]?' '+p[1].charAt(0).toUpperCase()+'.':'')+' (you)';
+ 
+ Array.prototype.forEach.call(document.querySelectorAll('#v-Community .li > span:first-child'),function(s){if(s.firstChild&&/\(you\)$/.test(s.firstChild.textContent))s.firstChild.textContent=lb});
+ Array.prototype.forEach.call(document.querySelectorAll('#circs .avs i:first-child'),function(i){i.textContent=n.charAt(0).toUpperCase()});
+ var g=document.querySelector('#cm .m');if(g&&/^Hi /.test(g.textContent))g.textContent='Hi '+p[0]+'! Ask me about your budget, goals or spending.'}
+function setName(n){curName=n;DATA.user.name=n;window.SW_NAME=esc(n);window.SW_RAW=n;syncName(n);var av=document.querySelector('.av');if(av)av.textContent=n.charAt(0).toUpperCase();var w=document.querySelector('.who');if(w&&w.firstChild)w.firstChild.textContent=n;var t=$('title'),h=t.querySelector('span');if(h&&/^Welcome/.test(t.textContent))h.textContent=n}
+try{var sv=localStorage.getItem('sw_name');if(sv&&sv.trim()){setName(sv.trim());pn.value=sv.trim()}}catch(e){}
+pn.addEventListener('input',function(){var v=pn.value.trim();if(v)setName(v)});
+pn.addEventListener('change',function(){var v=pn.value.trim();if(!v){pn.value=curName;toast('Name cannot be empty',1);return}setName(v);try{localStorage.setItem('sw_name',v)}catch(e){}toast('Display name updated')/* TEAMMATE: save via api('/profile',{method:'PATCH',...}) */});
+/* ---- guided tour ---- */
+var TS=[{k:'Dashboard',s:'.card.glow',t:'AI insight',x:'SaveWise AI spots savings and explains them in plain words.'},
+{k:'Savings',s:'#ppmove',t:'PayPal to goals',x:'Move money from your linked PayPal balance straight into any goal.'},
+{k:'Savings',s:'#sgoals',t:'Goal finish dates',x:'Every goal shows how funded it is and when you should reach it.'},
+{k:'Analysis',s:'.ia',t:'Act on insights',x:'Each insight has a one-tap action, like setting a Food cap.'},
+{k:'Dashboard',s:'#askbtn',t:'Ask the AI coach',x:'Ask anything about your budget, goals or spending.'},
+{k:'Settings',s:'#pname',t:'Make it yours',x:'Change your display name and your email updates with it.'}],tc=null;
+function tclear(){var h=document.querySelector('.tour-hl');if(h)h.classList.remove('tour-hl')}
+function tend(){tclear();if(tc){tc.remove();tc=null}}
+function tshow(i){tclear();if(i<0||i>=TS.length){tend();return}var s=TS[i];$('nav').querySelector('[data-k='+s.k+']').click();
+ if(!tc){tc=document.createElement('div');tc.className='card';tc.setAttribute('role','dialog');tc.setAttribute('aria-label','Guided tour');tc.style.cssText='position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:65;width:340px;max-width:calc(100vw - 24px)';document.body.appendChild(tc)}
+ tc.innerHTML='<h3>'+(i+1)+' of '+TS.length+' · '+s.t+'</h3><div style="font-size:13px;line-height:1.5">'+s.x+'</div><div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end"><button class="btn" id="tx" style="margin:0;background:rgba(255,255,255,.1)">Skip</button>'+(i?'<button class="btn" id="tb" style="margin:0">Back</button>':'')+'<button class="btn" id="tn" style="margin:0">'+(i===TS.length-1?'Done':'Next')+'</button></div>';
+ $('tx').onclick=tend;$('tn').onclick=function(){tshow(i+1)};if($('tb'))$('tb').onclick=function(){tshow(i-1)};$('tn').focus();
+ var el=document.querySelector(s.s);if(el){el.classList.add('tour-hl');el.scrollIntoView({behavior:'smooth',block:'center'})}}
+$('tourbtn').addEventListener('click',function(){tshow(0)});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&tc)tend()});
+/* ---- editable email ---- */
+var ORIG='nadia@savewise.app',pe=$('pemailin'),curMail=ORIG;
+function setMail(m){curMail=m;var e=$('wemail');if(e)e.textContent=m;var ok=m===ORIG;$('pemail').textContent=ok?'Verified':'Unverified';$('vsend').style.display=ok?'none':'inline-block'}
+try{var sm=localStorage.getItem('sw_email');if(sm){setMail(sm);pe.value=sm}}catch(e){}
+pe.addEventListener('change',function(){var v=pe.value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){pe.value=curMail;toast('Please enter a valid email address',1);return}setMail(v);try{localStorage.setItem('sw_email',v)}catch(e){}toast('Email updated')/* TEAMMATE: save via api('/profile') */});
+$('vsend').addEventListener('click',function(){toast('Verification link sent to '+curMail)/* TEAMMATE: api('/profile/verify-email') */});
+/* ---- headings, subtitles, section labels ---- */
+window.SW_HOME_SUB=function(){var d=new Date(),l=new Date(d.getFullYear(),d.getMonth()+1,0).getDate()-d.getDate();return d.toLocaleDateString('en-IN',{month:'long',year:'numeric'})+' \u00b7 '+l+' days left'};
+document.querySelector('.sub').textContent=window.SW_HOME_SUB();
+var RN={'Total savings':'You\u2019ve saved','AI insight':'Your smart tip','Budget by category':'Where your budget stands','My overview':'This month at a glance','Portfolio performance':'Your investments','Monthly budget':'Your plan','Spent':'Spent so far','Left':'Still available','Category limits':'Spending limits','Recent transactions':'Latest activity','Total saved':'Total savings','Saved by auto-save':'Saved for you','Savings growth':'How your savings grew','My goals':'What you\u2019re saving for','Where your money went':'Your spending, split up','AI insights':'What the AI noticed','Saving circles':'Saving together','Your 28-day no-spend streak':'Your no-spend streak','Top savers this week':'This week\u2019s leaderboard','AI coach':'Your AI coach','Money rules':'Your money rules','Profile':'About you','Privacy & your data':'Privacy and your data'};
+var SB={'You\u2019ve saved':'Across all your goals','Your smart tip':'Picked for you today','Where your budget stands':'Spent vs limit this month','This month at a glance':'Updated today','Monthly spending':'Last few months','Your investments':'Value and change','Your plan':'Monthly total','Spent so far':'Out of your plan','Still available':'Until it resets','Spending limits':'Per category','Latest activity':'Tap a row for details','Total savings':'All accounts and goals','PayPal balance':'Linked account','Saved for you':'By auto-save rules','How your savings grew':'Month by month','What you\u2019re saving for':'Tap a goal for details','Auto-save rules':'Switch on or off','Your spending, split up':'By category','What the AI noticed':'Tap an action to apply','Saving together':'With friends and flatmates','Your no-spend streak':'Keep the chain going','Challenges':'Join to stay motivated','This week\u2019s leaderboard':'Streaks and savings','Your AI coach':'Tone and alerts','Your money rules':'How your money moves','About you':'Name and email','Linked accounts':'Where your money comes from','Privacy and your data':'You stay in control'};
+document.querySelectorAll('.card h3').forEach(function(h){if(h.dataset.r)return;h.dataset.r=1;var f=h.firstChild;if(!f||f.nodeType!==3)return;var o=f.textContent.trim();if(RN[o])f.textContent=RN[o];var t=f.textContent.trim();if(SB[t]){var s=document.createElement('span');s.className='cs';s.textContent=SB[t];h.appendChild(s)}});
+[['#v-Dashboard .grid','This month'],['#v-Dashboard .grid > .card.wide','Investments'],['#v-Budget .g3','Overview'],['#v-Budget .g2','Limits and activity'],['#v-Savings .g3','Overview'],['#v-Savings .wide2','Growth'],['#v-Savings .g2','Goals and rules'],['#v-Analysis .g2','Insights'],['#v-Community .g2','Together'],['#v-Community .g2.mt','Challenges and rankings'],['#v-Settings .g2','Preferences'],['#v-Settings .g2.mt','Account']].forEach(function(x){var e=document.querySelector(x[0]);if(e&&!(e.previousElementSibling&&e.previousElementSibling.classList.contains('sl')))e.insertAdjacentHTML('beforebegin','<div class="sl">'+x[1]+'</div>')});
+/* ---- corner links, clickable cards, details ---- */
+function addLnk(h,txt,go){if(h&&!h.querySelector('.lnk'))h.insertAdjacentHTML('beforeend','<button class="lnk" data-go="'+go+'">'+txt+'</button>')}
+addLnk($('dcats').querySelector('h3'),'Edit','Budget');addLnk($('bars').parentNode.querySelector('h3'),'Details','Analysis');addLnk(document.querySelector('#v-Analysis .card h3'),'Budget','Budget');
+var c1=document.querySelector('#v-Dashboard .col .card'),c2=$('dsp').closest('.card');[[c1,'Savings'],[c2,'Budget']].forEach(function(x){x[0].classList.add('clk');x[0].setAttribute('data-go',x[1])});c1.classList.add('hero');
+var GR=[['1M','8.2% from last month'],['3M','19.2% in 3 months'],['6M','59% in 6 months'],['1Y','148% in a year']],gi=0,tp=$('tp');
+tp.setAttribute('role','button');tp.setAttribute('tabindex','0');tp.setAttribute('aria-label','Change period');tp.style.cursor='pointer';
+function gnext(){gi=(gi+1)%GR.length;tp.textContent=GR[gi][0]+' \u2304';$('ts').textContent='\u25b2 '+GR[gi][1]}
+tp.addEventListener('click',function(e){e.stopPropagation();gnext()});tp.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();gnext()}});
+function detail(r){var h,t,L=function(a,b){return '<div class="li"><span>'+a+'</span><b>'+b+'</b></div>'};
+ if(r.classList.contains('cat')){var sp=r.querySelectorAll('.t span'),p=sp[1].textContent.split('/'),u=num(p[0]),l=num(p[1]),goal=!!r.closest('#sgoals'),pc=Math.round(u/l*100),e=r.querySelector('.eta');t=sp[0].firstChild.textContent;
+  h=goal?L('Saved',money(u))+L('Target',money(l))+L('Still to go',money(Math.max(0,l-u)))+L('Progress',pc+'%')+(e?'<div class="d" style="color:var(--mut)">'+esc(e.textContent)+'</div>':''):L('Spent',money(u))+L('Limit',money(l))+L('Left',money(Math.max(0,l-u)))+L('Used',pc+'%')}
+ else{var s=r.querySelectorAll(':scope > span');t=s[0].firstChild.textContent;h=L('Category and date',esc(s[0].querySelector('small').textContent))+L('Amount',esc(s[1].textContent))}
+ openMod(t,[],function(){});$('mf').innerHTML=h}
+document.addEventListener('click',function(e){var g=e.target.closest('[data-go]');
+ if(g&&!(g.tagName!=='BUTTON'&&e.target.closest('button,.pill,input,select'))){$('nav').querySelector('[data-k='+g.dataset.go+']').click();window.scrollTo({top:0,behavior:'smooth'});return}
+ var r=e.target.closest('#bcats .cat,#dcats .cat,#sgoals .cat,#txs .li');if(r&&!e.target.closest('button'))detail(r)});
+document.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('#bcats .cat,#dcats .cat,#sgoals .cat,#txs .li')){e.preventDefault();detail(e.target)}});
+rows();paint();
+/* new goal */
+$('addgoal').addEventListener('click',function(){openMod('New goal',[{k:'n',l:'Goal name',ph:'e.g. New phone'},{k:'t',l:'Target amount (₹)',t:'number',ph:'50000'},{k:'s',l:'Saved so far (₹, optional)',t:'number',ph:'0'}],function(v){
+ var t=+v.t,s=+v.s||0;if(!v.n)return 'Please enter a goal name.';if(!(t>0))return 'Please enter a target above 0.';if(s<0||s>t)return 'Saved amount must be between 0 and the target.';
+ $('addgoal').insertAdjacentHTML('beforebegin',rowHTML(v.n,money(s)+' / '+t.toLocaleString('en-IN'),Math.round(s/t*100)))})});
+/* start a circle */
+function bindAdd(b){b.addEventListener('click',function(){var c=b.closest('.circ'),t=+c.dataset.tar,cur=Math.min(t,+c.dataset.cur+500);c.dataset.cur=cur;c.querySelector('.cv').textContent=money(cur)+' of '+money(t);c.querySelector('.track b').style.width=(cur/t*100)+'%'})}
+$('addcirc').addEventListener('click',function(){openMod('Start a circle',[{k:'n',l:'Circle name',ph:'e.g. Diwali fund'},{k:'t',l:'Target amount (₹)',t:'number',ph:'20000'},{k:'f',l:'Friends to invite (comma separated, optional)',ph:'Aarav, Meera'}],function(v){
+ var t=+v.t;if(!v.n)return 'Please enter a circle name.';if(!(t>0))return 'Please enter a target above 0.';
+ var fr=v.f?v.f.split(',').map(function(x){return x.trim()}).filter(Boolean):[],av='<i>'+esc(curName.charAt(0).toUpperCase())+'</i>'+fr.map(function(x){return '<i>'+esc(x.charAt(0).toUpperCase())+'</i>'}).join('');
+ var n=fr.length+1;
+ $('addcirc').insertAdjacentHTML('beforebegin','<div class="circ" data-cur="0" data-tar="'+t+'"><div class="li" style="border:0;padding:0"><span><b>'+esc(v.n)+'</b><small>'+n+(n===1?' member':' members')+' · no deadline</small></span><div class="avs">'+av+'</div></div><div class="track" style="margin-top:12px"><b style="width:0%"></b></div><div class="f"><span class="cv">₹0 of '+money(t)+'</span><button class="btn addc2" style="margin:0">+ ₹500</button></div></div>');
+ var nb=$('circs').querySelectorAll('.addc2');bindAdd(nb[nb.length-1])})});
+})();
+</script>
+</body>
+</html>
